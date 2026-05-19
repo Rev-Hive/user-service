@@ -6,7 +6,7 @@ spring:
     name: user-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/revhive_db
+    url: jdbc:mysql://mysql-db:3306/revhive_db
     username: sourav
     password: sourav@123
     driver-class-name: com.mysql.cj.jdbc.Driver
