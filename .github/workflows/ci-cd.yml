@@ -33,8 +33,10 @@ jobs:
       - name: Configure Maven for GitHub Packages
         run: |
           mkdir -p ~/.m2
+
           cat > ~/.m2/settings.xml <<EOF
           <settings>
+
             <servers>
               <server>
                 <id>github</id>
@@ -42,6 +44,25 @@ jobs:
                 <password>${GITHUB_TOKEN}</password>
               </server>
             </servers>
+
+            <activeProfiles>
+              <activeProfile>github</activeProfile>
+            </activeProfiles>
+
+            <profiles>
+              <profile>
+                <id>github</id>
+
+                <repositories>
+                  <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/Rev-Hive/common-library</url>
+                  </repository>
+                </repositories>
+
+              </profile>
+            </profiles>
+
           </settings>
           EOF
         env:
@@ -78,8 +99,10 @@ jobs:
       - name: Configure Maven for GitHub Packages
         run: |
           mkdir -p ~/.m2
+
           cat > ~/.m2/settings.xml <<EOF
           <settings>
+
             <servers>
               <server>
                 <id>github</id>
@@ -87,6 +110,25 @@ jobs:
                 <password>${GITHUB_TOKEN}</password>
               </server>
             </servers>
+
+            <activeProfiles>
+              <activeProfile>github</activeProfile>
+            </activeProfiles>
+
+            <profiles>
+              <profile>
+                <id>github</id>
+
+                <repositories>
+                  <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/Rev-Hive/common-library</url>
+                  </repository>
+                </repositories>
+
+              </profile>
+            </profiles>
+
           </settings>
           EOF
         env:
