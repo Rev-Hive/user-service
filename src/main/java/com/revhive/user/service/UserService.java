@@ -66,11 +66,15 @@ public class UserService {
         return mapToResponse(user);
     }
 
-    public UserProfile getProfileById(
-            Long userId
-    ) {
+    public UserProfile getProfileById(Long userId) {
 
-        User user = userRepository.findById(userId)
+        System.out.println("Searching userId = " + userId);
+
+        System.out.println(
+                userRepository.findUserByUserId(userId)
+        );
+
+        User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(
                         () -> new RuntimeException("User not found")
                 );

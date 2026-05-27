@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_profiles")
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class User{
 
     @Id
+    @Column(name = "id")
     private Long userId;
 
     @Column(nullable = false, unique = true)
