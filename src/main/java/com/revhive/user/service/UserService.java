@@ -1,5 +1,6 @@
 package com.revhive.user.service;
 
+import com.revhive.user.dto.request.ChangePasswordRequest;
 import com.revhive.user.dto.request.CreateProfile;
 import com.revhive.user.dto.request.UpdateProfile;
 import com.revhive.user.dto.response.UserProfile;
@@ -9,6 +10,9 @@ import com.revhive.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +25,7 @@ public class UserService {
             LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public UserProfile createProfile(
             CreateProfile request
@@ -55,17 +60,17 @@ public class UserService {
         return mapToResponse(savedUser);
     }
 
-    public UserProfile getCurrentUser(
-            String email
-    ) {
+    public UserProfile getCurrentUser(String email) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "User not found with email: " + email
+                        )
                 );
 
         return mapToResponse(user);
     }
-
     public UserProfile getProfileById(Long userId) {
 
         System.out.println("Searching userId = " + userId);
@@ -92,21 +97,42 @@ public class UserService {
                         () -> new RuntimeException("User not found")
                 );
 
-        user.setBio(request.getBio());
-        user.setDob(request.getDob());
-        user.setAvatarUrl(request.getAvatarUrl());
-        user.setSubscribeNewsletter(
-                request.getSubscribeNewsletter()
-        );
+        if (request.getUsername() != null &&
+                !request.getUsername().equals(user.getUsername())) {
 
-        user.setStatus(request.getStatus());
+            if (userRepository.existsByUsername(request.getUsername())) {
+                throw new RuntimeException("Username already exists");
+            }
 
-        User updatedUser =
-                userRepository.save(user);
+            user.setUsername(request.getUsername());
+        }
+
+        if (request.getBio() != null) {
+            user.setBio(request.getBio());
+        }
+
+        if (request.getDob() != null) {
+            user.setDob(request.getDob());
+        }
+
+        if (request.getAvatarUrl() != null) {
+            user.setAvatarUrl(request.getAvatarUrl());
+        }
+
+        if (request.getSubscribeNewsletter() != null) {
+            user.setSubscribeNewsletter(
+                    request.getSubscribeNewsletter()
+            );
+        }
+
+        if (request.getStatus() != null) {
+            user.setStatus(request.getStatus());
+        }
+
+        User updatedUser = userRepository.save(user);
 
         return mapToResponse(updatedUser);
     }
-
     public List<UserSearchDTO> searchUsers(
             String query
     ) {
@@ -146,4 +172,25 @@ public class UserService {
                 .status(user.getStatus())
                 .build();
     }
+
+
+
+    public void changePassword(String email, ChangePasswordRequest request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(
+                request.getCurrentPassword(),
+                user.getPassword())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword())
+        );
+
+        userRepository.save(user);
+    }
+
 }

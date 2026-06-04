@@ -42,9 +42,14 @@ public class User{
     @Past(message = "DOB must be in the past")
     private LocalDate dob;
 
+
+
+
     private Boolean subscribeNewsletter;
 
     private String status;
+
+    private String password;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

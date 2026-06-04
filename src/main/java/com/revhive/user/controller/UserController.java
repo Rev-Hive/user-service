@@ -1,5 +1,6 @@
 package com.revhive.user.controller;
 
+import com.revhive.user.dto.request.ChangePasswordRequest;
 import com.revhive.user.dto.request.CreateProfile;
 import com.revhive.user.dto.request.UpdateProfile;
 import com.revhive.user.dto.response.UserProfile;
@@ -51,7 +52,9 @@ public class UserController {
     public ResponseEntity<UserProfile> getCurrentUser(
             Authentication authentication
     ) {
-
+        System.out.println("AUTH = " + authentication);
+        System.out.println("NAME = " + authentication.getName());
+        System.out.println(authentication);
         return ResponseEntity.ok(
                 userService.getCurrentUser(
                         authentication.getName()
@@ -83,5 +86,19 @@ public class UserController {
         return ResponseEntity.ok(
                 userService.searchUsers(query)
         );
+    }
+
+    @PutMapping("/settings/password")
+    public ResponseEntity<?> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication
+    ) {
+
+        userService.changePassword(
+                authentication.getName(),
+                request
+        );
+
+        return ResponseEntity.ok("Password changed successfully");
     }
 }
