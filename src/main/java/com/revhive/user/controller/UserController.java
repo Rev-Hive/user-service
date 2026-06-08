@@ -5,6 +5,7 @@ import com.revhive.user.dto.request.CreateProfile;
 import com.revhive.user.dto.request.UpdateProfile;
 import com.revhive.user.dto.response.UserProfile;
 import com.revhive.user.dto.response.UserSearchDTO;
+import com.revhive.user.dto.response.UserSummary;
 import com.revhive.user.model.User;
 import com.revhive.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -85,6 +86,21 @@ public class UserController {
 
         return ResponseEntity.ok(
                 userService.searchUsers(query)
+        );
+    }
+
+    @GetMapping("/{userId}/summary")
+    public ResponseEntity<UserSummary> getUserSummary(
+            @PathVariable Long userId
+    ) {
+        UserProfile user = userService.getProfileById(userId);
+
+        return ResponseEntity.ok(
+                new UserSummary(
+                        user.getUserId(),
+                        user.getUsername(),
+                        user.getAvatarUrl()
+                )
         );
     }
 

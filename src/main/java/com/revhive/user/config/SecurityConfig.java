@@ -32,6 +32,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/ai").permitAll()
                         .requestMatchers("/api/v1/follows/**").authenticated()
                         .requestMatchers("/api/admin/stats").permitAll()
+                        .requestMatchers("/api/v1/users/**").permitAll()
+                        .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/api/users/search"
