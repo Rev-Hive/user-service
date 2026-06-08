@@ -99,6 +99,7 @@ public class UserController {
                 new UserSummary(
                         user.getUserId(),
                         user.getUsername(),
+                        user.getBio(),
                         user.getAvatarUrl()
                 )
         );
